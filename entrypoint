@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+set -ex
+
+if ! [[ $EUID == 0 ]]; then
+  echo "This docker image must be started as root, so don't use 'docker run --user=...'." >&2
+  echo "Instead, pass environment variables USER_NAME, USER_ID, GROUP_NAME, GROUP_ID (and optionally HOME) for the user you want to become." >&2
+  exit 1
+fi
+
+if [[ "|${USER_NAME}|${USER_ID}|${GROUP_NAME}|${GROUP_ID}" == *"||"* ]]; then
+  echo "You must pass env variables USER_NAME, USER_ID, GROUP_NAME, GROUP_ID to the Docker container." >&2
+  echo "Passing env variable HOME is optional." >&2
+  exit 1
+fi
+export HOME=${HOME:-"/home/${USER_NAME}"}
+
+groupadd \
+  --gid "${GROUP_ID}" \
+  "${GROUP_NAME}"
+
+if [[ -d "$HOME" ]]; then
+  CREATE_HOME=""
+else
+  CREATE_HOME="--create-home"
+fi
+
+useradd \
+  --uid "${USER_ID}" \
+  --gid "${GROUP_ID}" \
+  --groups video \
+  ${CREATE_HOME} \
+  --home-dir "${HOME}" \
+  "${USER_NAME}"
+
+XDG_RUNTIME_DIR="/run/user/${USER_ID}"
+mkdir -p "${XDG_RUNTIME_DIR}"
+chown -R "${USER_ID}:${GROUP_ID}" "${XDG_RUNTIME_DIR}"
+
+XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR}" \
+  exec gosu "${USER_ID}:${GROUP_ID}" "$@"
