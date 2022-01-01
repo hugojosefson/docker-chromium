@@ -1,4 +1,4 @@
-FROM debian:11
+FROM docker.io/debian:11
 MAINTAINER Hugo Josefson <hugo@josefson.org> (https://www.hugojosefson.com/)
 
 ENV DEBIAN_FRONTEND=noninteractive

@@ -1,4 +1,4 @@
-# Docker image hugojosefson/chromium
+# Docker image docker.io/hugojosefson/chromium
 
 Runs the Chromium browser, inside Docker.
 
@@ -30,7 +30,7 @@ docker run --rm -it \
   --env DISPLAY="unix${DISPLAY}" \
   --volume "$(pwd)":"$(pwd)" \
   --workdir "$(pwd)" \
-  hugojosefson/chromium
+  docker.io/hugojosefson/chromium
 ```
 
 ## License
