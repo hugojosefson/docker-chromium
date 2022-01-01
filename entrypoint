@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -ex
+set -e
 
 if ! [[ $EUID == 0 ]]; then
   echo "This docker image must be started as root, so don't use 'docker run --user=...'." >&2

@@ -8,9 +8,9 @@ LAST_UPDATED="${LAST_UPDATED:-$(date --iso)}"
 
 docker build \
   --build-arg LAST_UPDATED="${LAST_UPDATED}" \
-  --tag "hugojosefson/signal-desktop:latest" \
+  --tag "hugojosefson/chromium:latest" \
   .
 
 if [[ "${1}" == "--push" ]]; then
-  docker push "hugojosefson/signal-desktop:latest"
+  docker push "hugojosefson/chromium:latest"
 fi
