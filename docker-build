@@ -1,16 +1,24 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail;IFS=$'\t\n'
 
-cd "$(dirname ${0})"
+cd "$(dirname "${0}")"
 
 LAST_UPDATED="${LAST_UPDATED:-$(date --iso)}"
+REPO="hugojosefson/chromium"
 
 docker build \
   --build-arg LAST_UPDATED="${LAST_UPDATED}" \
-  --tag "hugojosefson/chromium:latest" \
+  --tag "${REPO}:latest" \
   .
 
-if [[ "${1}" == "--push" ]]; then
-  docker push "hugojosefson/chromium:latest"
+FULL_VERSION="$(docker run --rm -i --entrypoint /bin/sh hugojosefson/chromium -c '/usr/bin/apt-cache policy chromium' | awk -F ' ' '/Installed:/{print $2}')"
+SHORT_VERSION="$(cut -d "." -f 1 <<< "${FULL_VERSION}")"
+docker tag "${REPO}:latest" "${REPO}:${FULL_VERSION}"
+docker tag "${REPO}:latest" "${REPO}:${SHORT_VERSION}"
+
+if [[ "${1:-""}" == "--push" ]]; then
+  docker push "${REPO}:latest"
+  docker push "${REPO}:${FULL_VERSION}"
+  docker push "${REPO}:${SHORT_VERSION}"
 fi
