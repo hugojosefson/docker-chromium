@@ -4,6 +4,10 @@ set -euo pipefail;IFS=$'\t\n'
 
 cd "$(dirname "${0}")"
 
+docker() {
+  sudo podman "$@"
+}
+
 LAST_UPDATED="${LAST_UPDATED:-$(date --iso)}"
 REPO="docker.io/hugojosefson/chromium"
 
