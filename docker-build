@@ -17,6 +17,7 @@ docker build \
   .
 
 FULL_VERSION="$(docker run --rm -i --entrypoint /bin/sh "${REPO}" -c '/usr/bin/apt-cache policy chromium' | awk -F ' ' '/Installed:/{print $2}')"
+FULL_VERSION="${FULL_VERSION//\~/-}"
 SHORT_VERSION="$(cut -d "." -f 1 <<< "${FULL_VERSION}")"
 docker tag "${REPO}:latest" "${REPO}:${FULL_VERSION}"
 docker tag "${REPO}:latest" "${REPO}:${SHORT_VERSION}"

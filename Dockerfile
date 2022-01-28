@@ -28,7 +28,7 @@ RUN apt-get install -y chromium
 ARG LAST_UPDATED
 RUN (test ! -z "${LAST_UPDATED}" && exit 0 || echo "--build-arg LAST_UPDATED must be supplied to docker build." >&2 && exit 1)
 RUN echo "Last updated ${LAST_UPDATED}."
-RUN apt-get update && apt-get dist-upgrade --purge -y && apt-get autoremove --purge && apt-get clean
+RUN apt-get update && apt-get dist-upgrade --purge -y && apt-get autoremove --purge -y && apt-get clean
 
 WORKDIR /
 COPY entrypoint /
